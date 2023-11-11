@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  camera:
+    image: ccuni/camera-service-2023w
+    ports:
+      - "8001:80"
+
+  image-analysis:
+    image: ccuni/image-analysis-service-2023w
+    ports:
+      - "8002:80"
+
+  face-recognition:
+    image: ccuni/face-recognition-service-2023w
+    ports:
+      - "8003:80"
+
+  section:
+    image: ccuni/section-service-2023w
+    ports:
+      - "8004:80"
+
+  alert:
+    image: ccuni/alert-service-2023w
+    ports:
+      - "8005:80"
