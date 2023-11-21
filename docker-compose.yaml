@@ -2,26 +2,55 @@ version: "3"
 
 services:
   camera:
+    container_name: camera
     image: ccuni/camera-service-2023w
     ports:
       - "8001:80"
+    networks:
+      - my_network
 
   image-analysis:
+    container_name: image-analysis
     image: ccuni/image-analysis-service-2023w
     ports:
       - "8002:80"
+    networks:
+      - my_network
 
   face-recognition:
+    container_name: face-recognition
     image: ccuni/face-recognition-service-2023w
     ports:
       - "8003:80"
+    networks:
+      - my_network
 
   section:
+    container_name: section
     image: ccuni/section-service-2023w
     ports:
       - "8004:80"
+    networks:
+      - my_network
 
   alert:
+    container_name: alert
     image: ccuni/alert-service-2023w
     ports:
       - "8005:80"
+    networks:
+      - my_network
+
+  collector:
+    build: ./collector
+    container_name: collector
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

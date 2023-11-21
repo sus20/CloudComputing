@@ -1,2 +1,7 @@
-/collector/venv/
+/collector/venv/*
 __pycache__
+/camera/
+/face_recognition/
+/alert/
+/image_analysis/
+/section/
