@@ -2,40 +2,67 @@ version: "3"
 
 services:
   camera:
-    container_name: camera
     image: ccuni/camera-service-2023w
+    container_name: camera
     ports:
       - "8001:80"
     networks:
       - my_network
 
   image-analysis:
-    container_name: image-analysis
     image: ccuni/image-analysis-service-2023w
+    container_name: image-analysis
     ports:
       - "8002:80"
     networks:
       - my_network
 
   face-recognition:
-    container_name: face-recognition
     image: ccuni/face-recognition-service-2023w
+    container_name: face-recognition
     ports:
       - "8003:80"
     networks:
       - my_network
 
+  sectiondb:
+    image: mongo
+    container_name: sectiondb
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - my_network
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    networks:
+      - my_network
+
   section:
-    container_name: section
     image: ccuni/section-service-2023w
+    container_name: section
     ports:
       - "8004:80"
+    env_file:
+      - .env
+    depends_on:
+      - sectiondb
     networks:
       - my_network
 
   alert:
-    container_name: alert
     image: ccuni/alert-service-2023w
+    container_name: alert
     ports:
       - "8005:80"
     networks:
@@ -50,6 +77,10 @@ services:
       - .env
     networks:
       - my_network
+
+volumes:
+  mongo-data:
+    driver: local
 
 networks:
   my_network:
