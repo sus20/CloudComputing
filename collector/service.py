@@ -90,34 +90,32 @@ def create_frames(payload: CollectorFrame):
     collector_frames_list.append(frame_dict)
     image_res = forward_to_image_analysis(updated_payload)
 
-    # Ensure the response object exists, is not None, and has an okay status code.
-    if image_res and image_res.status_code == status.HTTP_200_OK:
-
-        image_analysis_frames_list.append(image_res.json())
-        fr_res = forward_to_face_recognition(image_res.json())
-
-        if fr_res and fr_res.status_code == status.HTTP_200_OK:
-
-            # fr_res_data = face_regonigition response data
-            fr_res_data = fr_res.json()
-            face_recognition_frames_list.append(fr_res_data)
-
-            if "known-persons" in fr_res_data:
-                alert_response = forward_to_alert(fr_res_data)
-                if alert_response and alert_response.status_code == status.HTTP_200_OK:
-                    return {"message": "Forwarding to alert sucessful! "}
-                else:
-                    return {"message": "Forwarding to alert service failed"}
-        else:
-            section_res = forward_to_section(image_res.json())
-
-            if section_res and section_res.status_code == status.HTTP_200_OK:
-                return {"message": "Person added to section "}
-            else:
-                return {"message": "Frame forwarding to section service failed"}
-        return {"message": "Frame forwarding to face recognition failed"}
-    else:
+    if not image_res or image_res.status_code != status.HTTP_200_OK:
         return {"message": "Frame forwarding to image analysis failed"}
+
+    image_analysis_frames_list.append(image_res.json())
+    fr_res = forward_to_face_recognition(image_res.json())
+
+    if not fr_res or fr_res.status_code != status.HTTP_200_OK:
+        section_res = forward_to_section(image_res.json())
+
+        if section_res and section_res.status_code == status.HTTP_200_OK:
+            return {"message": "Person added to section "}
+        else:
+            return {"message": "Frame forwarding to section service failed"}
+
+    fr_res_data = fr_res.json()
+    face_recognition_frames_list.append(fr_res_data)
+
+    if "known-persons" in fr_res_data:
+        alert_response = forward_to_alert(fr_res_data)
+
+        if alert_response and alert_response.status_code == status.HTTP_200_OK:
+            return {"message": "Forwarding to alert successful! "}
+        else:
+            return {"message": "Forwarding to alert service failed"}
+
+    return {"message": "Frame forwarding to face recognition failed"}
 
 
 @app.get("/frames", response_model=List[CollectorFrame])
