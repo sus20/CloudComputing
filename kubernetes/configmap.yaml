@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-map
+data:
+  IMAGE_ANALYSIS_URL: "http://image-analysis-service:8002"
+  FACE_RECOGNITION_URL: "http://face-recognition-service:8003"
+  ALERT_URL: "http://alert-service:8005"
+  SECTION_URL: "http://section-service:8004"
+
+  EXTERNAL_MONGODB_URL: "mongodb@sectiondb-service:27017"
+  EXTERNAL_MONGODB_DB: "sectionsdb"
+  EXTERNAL_MONGODB_COLLECTION: "persons"
+
+  MONGO_INITDB_ROOT_USERNAME: ""
+  MONGO_INITDB_ROOT_PASSWORD: ""
+  ME_CONFIG_MONGODB_ADMINUSERNAME: ""
+  ME_CONFIG_MONGODB_ADMINPASSWORD: ""
+  ME_CONFIG_MONGODB_SERVER: "sectiondb-service"

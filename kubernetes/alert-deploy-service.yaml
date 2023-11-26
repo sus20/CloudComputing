@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alert-deploy
+  labels:
+    name: alert-deploy
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: alert-pod
+      app: cc2023w
+  template:
+    metadata:
+      name: alert-pod
+      labels:
+        name: alert-pod
+        app: cc2023w
+    spec:
+      containers:
+        - name: alert
+          image: ccuni/alert-service-2023w
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alert-service # this is the name of service
+  labels:
+    name: alert-service
+    app: cc2023w
+spec:
+  type: NodePort
+  ports:
+    - port: 8005
+      targetPort: 80
+      nodePort: 30004
+  # in order to link the service to the pod, we have to specify same labels configured for pod
+  selector:
+    name: alert-pod
+    app: cc2023w

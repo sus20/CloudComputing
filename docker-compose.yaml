@@ -69,7 +69,7 @@ services:
       - my_network
 
   collector:
-    build: ./collector
+    image: sussap/collector_prac:latest
     container_name: collector
     ports:
       - "8000:80"

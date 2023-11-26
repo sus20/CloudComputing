@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: section-deploy
+  labels:
+    name: section-deploy
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: section-pod
+      app: cc2023w
+  template:
+    metadata:
+      name: section-pod
+      labels:
+        name: section-pod
+        app: cc2023w
+    spec:
+      containers:
+        - name: section
+          image: ccuni/section-service-2023w
+          ports:
+            - containerPort: 80
+          env:
+            - name: EXTERNAL_MONGODB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: EXTERNAL_MONGODB_URL
+            - name: EXTERNAL_MONGODB_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: EXTERNAL_MONGODB_DB
+            - name: EXTERNAL_MONGODB_COLLECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: EXTERNAL_MONGODB_COLLECTION
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: section-service # this is the name of service
+  labels:
+    name: section-service
+    app: cc2023w
+spec:
+  type: NodePort
+  ports:
+    - port: 8004
+      targetPort: 80
+      nodePort: 30003
+  # in order to link the service to the pod, we have to specify same labels configured for pod
+  selector:
+    name: section-pod
+    app: cc2023w

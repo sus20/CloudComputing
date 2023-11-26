@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sectiondb-deploy
+  labels:
+    name: sectiondb-deploy
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: sectiondb-pod
+      app: cc2023w
+  template:
+    metadata:
+      name: sectiondb-pod
+      labels:
+        name: sectiondb-pod
+        app: cc2023w
+    spec:
+      containers:
+        - name: sectiondb
+          image: mongo
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: MONGO_INITDB_ROOT_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sectiondb-service
+  labels:
+    name: sectiondb-service
+    app: cc2023w
+spec:
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  # in order to link the service to the pod, we have to specify same labels configured for pod
+  selector:
+    name: sectiondb-pod
+    app: cc2023w

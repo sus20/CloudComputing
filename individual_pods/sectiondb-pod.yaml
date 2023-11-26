@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sectiondb-pod
+  labels:
+    name: sectiondb-pod # which can be the same name as pod (the metadata name)
+    app: cc2023w # name of the applicaton
+spec:
+  containers:
+    - name: sectiondb
+      image: mongo
+      ports:
+        - containerPort: 27017 # the port on which the application listens
+      env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: environment-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: environment-secret
+              key: MONGO_INITDB_ROOT_PASSWORD

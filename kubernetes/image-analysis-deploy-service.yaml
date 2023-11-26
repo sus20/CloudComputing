@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-analysis-deploy
+  labels:
+    name: image-analysis-deploy
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: image-analysis-pod
+      app: cc2023w
+  template:
+    metadata:
+      name: image-analysis-pod
+      labels:
+        name: image-analysis-pod
+        app: cc2023w
+    spec:
+      containers:
+        - name: image-analysis
+          image: ccuni/image-analysis-service-2023w
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-analysis-service # this is the name of service
+  labels:
+    name: image-analysis-service
+    app: cc2023w
+spec:
+  ports:
+    - port: 8002
+      targetPort: 80
+  # in order to link the service to the pod, we have to specify same labels configured for pod
+  selector:
+    name: image-analysis-pod
+    app: cc2023w

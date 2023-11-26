@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express-deploy
+  labels:
+    name: mongo-express-deploy
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo-express-pod
+      app: cc2023w
+  template:
+    metadata:
+      name: mongo-express-pod
+      labels:
+        name: mongo-express-pod
+        app: cc2023w
+    spec:
+      containers:
+        - name: mongo-express
+          image: mongo-express
+          ports:
+            - containerPort: 8081
+          env:
+            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: ME_CONFIG_MONGODB_ADMINUSERNAME
+            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: ME_CONFIG_MONGODB_ADMINPASSWORD
+            - name: ME_CONFIG_MONGODB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: config-map
+                  key: ME_CONFIG_MONGODB_SERVER
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express-service # this is the service name
+  labels:
+    name: mongo-express-service
+    app: cc2023w
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8081
+      targetPort: 8081
+      nodePort: 30005
+  # in order to link the service to the pod, we have to specify same labels configured for pod
+  selector:
+    name: mongo-express-pod
+    app: cc2023w

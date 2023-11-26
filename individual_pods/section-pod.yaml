@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: section-pod
+  labels:
+    name: section-pod
+    app: cc2023w
+spec:
+  containers:
+    - name: section
+      image: ccuni/section-service-2023w
+      ports:
+        - containerPort: 80
+      env:
+        - name: EXTERNAL_MONGODB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: config-map
+              key: EXTERNAL_MONGODB_URL
+        - name: EXTERNAL_MONGODB_DB
+          valueFrom:
+            configMapKeyRef:
+              name: config-map
+              key: EXTERNAL_MONGODB_DB
+        - name: EXTERNAL_MONGODB_COLLECTION
+          valueFrom:
+            configMapKeyRef:
+              name: config-map
+              key: EXTERNAL_MONGODB_COLLECTION
