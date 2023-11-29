@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: collector
-          image: sussap/collector_prac:latest
+          image: sussap/collector_prac:collector_v2
           ports:
             - containerPort: 80
           env:
@@ -53,7 +53,6 @@ metadata:
     name: collector-service
     app: cc2023w
 spec:
-  type: NodePort
   ports:
     - port: 8000
       targetPort: 80

@@ -8,3 +8,6 @@ kubectl delete -f face-recognition-deploy-service.yaml
 kubectl delete -f image-analysis-deploy-service.yaml
 kubectl delete -f mongoexpress-deploy-service.yaml
 kubectl delete -f section-deploy-service.yaml
+kubectl delete -f prometheus-deploy-service.yaml
+kubectl delete -f grafana-deploy-service.yaml
+kubectl delete -f path-based-ingressrules.yaml

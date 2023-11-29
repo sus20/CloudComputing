@@ -49,7 +49,7 @@ metadata:
     name: mongo-express-service
     app: cc2023w
 spec:
-  type: nodePort
+  type: NodePort
   ports:
     - port: 8081
       targetPort: 8081

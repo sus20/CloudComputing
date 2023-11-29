@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  labels:
+    app: cc2023w
+data:
+  datasources.yaml: |-
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus-service:9090  # Update with your Prometheus service name and port
+      basicAuth: false
+      isDefault: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-deployment
+  labels:
+    app: cc2023w
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cc2023w
+      name: grafana
+  template:
+    metadata:
+      labels:
+        app: cc2023w
+        name: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin" # Set your desired admin password
+          volumeMounts:
+            - name: grafana-datasources-volume
+              mountPath: /etc/grafana/provisioning/datasources
+      volumes:
+        - name: grafana-datasources-volume
+          configMap:
+            name: grafana-datasources
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  labels:
+    app: cc2023w
+spec:
+  selector:
+    app: cc2023w
+    name: grafana
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: NodePort

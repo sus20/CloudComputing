@@ -1,6 +1,7 @@
 from datetime import datetime
 from fastapi import FastAPI, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 import httpx
 import os
 import logging
@@ -17,6 +18,10 @@ logger = logging.getLogger(__name__)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+
+# Set up Prometheus instrumentation for FastAPI,
+#  adding middleware and exposing /metrics endpoint.
+Instrumentator().instrument(app).expose(app)
 
 image_analysis_url = os.getenv("IMAGE_ANALYSIS_URL")
 face_recognition_url = os.getenv("FACE_RECOGNITION_URL")

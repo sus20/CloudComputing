@@ -8,3 +8,6 @@ kubectl apply -f face-recognition-deploy-service.yaml
 kubectl apply -f image-analysis-deploy-service.yaml
 kubectl apply -f mongoexpress-deploy-service.yaml
 kubectl apply -f section-deploy-service.yaml
+kubectl apply -f prometheus-deploy-service.yaml
+kubectl apply -f grafana-deploy-service.yaml
+kubectl apply -f path-based-ingressrules.yaml
